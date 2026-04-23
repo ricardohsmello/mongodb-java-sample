@@ -1,19 +1,35 @@
 package com.example.mongodb;
 
+import com.example.mongodb.model.Book;
+import com.example.mongodb.util.BookCodec;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.AggregateIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Projections;
 import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistries;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.conversions.Bson;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.mongodb.client.model.Aggregates.*;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Projections.*;
 
 public class PerfQueryMain {
 
@@ -31,57 +47,41 @@ public class PerfQueryMain {
 	};
 
 	public static void main(String[] args) {
-		String uri = args.length > 0 ? args[0] : "mongodb://localhost:28000";
-		String dbName = args.length > 1 ? args[1] : "bookstore";
+		String uri = args.length > 0 ? args[0] : "mongodb+srv://ricardohsmello:devrel@cluster0.1nxmr8u.mongodb.net/?appName=ricardo-content";
+		String dbName = args.length > 1 ? args[1] : "library";
 		String coll = args.length > 2 ? args[2] : "books";
 
 		try (MongoClient client = MongoClients.create(uri)) {
 			MongoDatabase db = client.getDatabase(dbName);
-			MongoCollection<Document> books = db.getCollection(coll);
 
-			System.out.printf("[perf] target=%s.%s | page=%d | delay=%dms%n",
-					dbName, coll, PAGE_SIZE, SLEEP_MS);
+//			CodecRegistry registry = CodecRegistries.fromRegistries(
+//					MongoClientSettings.getDefaultCodecRegistry(),
+//					CodecRegistries.fromProviders(PojoCodecProvider.builder().automatic(true).build())
+//			);
 
-			final AtomicBoolean running = new AtomicBoolean(true);
-			Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-				System.out.println("\n[perf] finishing...");
-				running.set(false);
-			}));
+			CodecRegistry registry = CodecRegistries.fromRegistries(
+					CodecRegistries.fromCodecs(new BookCodec()),
+					MongoClientSettings.getDefaultCodecRegistry()
+			);
 
-			Random rnd = new Random();
-			long ops = 0;
-			long totalNanos = 0;
-			Instant startWall = Instant.now();
 
-			while (running.get()) {
-				long before = System.nanoTime();
+			MongoCollection<Book> books = db.getCollection("books", Book.class).withCodecRegistry(registry);
 
-				switch (rnd.nextInt(7)) {
-					case 0 -> findByPublishedYear(books, rndpublishedYear(rnd));
-					case 1 -> findBypublishedYearLt(books, rndpublishedYear(rnd));
-					case 2 -> findBypublishedYearGt(books, rndpublishedYear(rnd));
-					case 3 -> findBypublishedYearBetween(books, rndpublishedYear(rnd), rndpublishedYear(rnd));
-					case 4 -> findByTitleContains(books, TITLE_KEYS[rnd.nextInt(TITLE_KEYS.length)]);
-					case 5 -> findByPriceBetween(books, rndPrice(rnd), rndPrice(rnd));
-					case 6 -> countVariants(books, rnd);
-				}
+			MongoCollection<Document> debug = db.getCollection("books");
+			Document first = debug.find().first();
+			System.out.println("Sample doc: " + (first != null ? first.toJson() : "COLLECTION EMPTY"));
 
-				long dur = System.nanoTime() - before;
-				totalNanos += dur;
-				ops++;
+			AggregateIterable<Book> aggregate = books.aggregate(
+					List.of(
+							match(gt("year", 2010)),
+							limit(5)
+					)
+			);
 
-				if (ops % STATS_EVERY_N == 0) {
-					double avgMs = (totalNanos / 1_000_000.0) / ops;
-					Duration wall = Duration.between(startWall, Instant.now());
-					System.out.printf("[perf] ops=%d | avg=%.2f ms | wall=%ds%n",
-							ops, avgMs, wall.toSeconds());
-				}
+			System.out.println("Aggregate");
+			aggregate.forEach(System.out::println);
 
-				if (SLEEP_MS > 0) Thread.sleep(SLEEP_MS);
-			}
 
-			double avgMs = ops == 0 ? 0.0 : (totalNanos / 1_000_000.0) / ops;
-			System.out.printf("[perf] fim. ops=%d | avg=%.2f ms%n", ops, avgMs);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -89,7 +89,7 @@ public class PerfQueryMain {
 
 	static void findByPublishedYear(MongoCollection<Document> c, int publishedYear) {
 
-		try (MongoCursor<Document> cur = c.find(Filters.eq("publishedYear", publishedYear))
+		try (MongoCursor<Document> cur = c.find(eq("publishedYear", publishedYear))
 				.limit(PAGE_SIZE)
 				.projection(Projections.include("_id", "title", "publishedYear", "price"))
 				.iterator()) {
@@ -149,7 +149,7 @@ public class PerfQueryMain {
 
 	static void countVariants(MongoCollection<Document> c, Random rnd) {
 		if (rnd.nextBoolean()) {
-			c.countDocuments(Filters.eq("publishedYear", rndpublishedYear(rnd)));
+			c.countDocuments(eq("publishedYear", rndpublishedYear(rnd)));
 		} else {
 			double a = rndPrice(rnd), b = rndPrice(rnd);
 			double lo = Math.min(a, b), hi = Math.max(a, b);
