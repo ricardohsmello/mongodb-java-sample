@@ -31,6 +31,7 @@ public class DataInitializer implements CommandLineRunner {
             "Cloud Computing", "Algorithms", "Databases", "Software Engineering",
             "Artificial Intelligence", "Cybersecurity", "DevOps", "Mobile Development"
     };
+
     private static final String[] FIRST_NAMES = {
             "John", "Jane", "Michael", "Sarah", "David", "Emily", "Robert", "Lisa",
             "James", "Mary", "William", "Jennifer", "Richard", "Patricia", "Thomas"
