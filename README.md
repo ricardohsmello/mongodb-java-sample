@@ -1,1 +1,3 @@
-# this project is designed for tests
+# MongoDB SAMPLE Java
+
+## this project is designed for tests
