@@ -2,18 +2,20 @@ package com.example.resources;
 
 import com.example.model.Book;
 import com.example.service.BookService;
-import com.mongodb.MongoTimeoutException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.bson.Document;
 
 import java.util.List;
 import java.util.Map;
@@ -75,6 +77,36 @@ public class BookResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.noContent().build();
+    }
+
+    @GET
+    @Path("/classify")
+    public List<Document> classifyByPageCount() {
+        return bookService.classifyByPageCount();
+    }
+
+    @GET
+    @Path("/per-author")
+    public List<Document> countBooksPerAuthor() {
+        return bookService.countBooksPerAuthor();
+    }
+
+    @GET
+    @Path("/sort/year")
+    public List<Book> sortedByYear(@QueryParam("order") @DefaultValue("desc") String order) {
+        return bookService.sortedByYear(order);
+    }
+
+    @GET
+    @Path("/with-reviews")
+    public List<Document> booksWithReviews() {
+        return bookService.booksWithReviews();
+    }
+
+    @GET
+    @Path("/top/{limit}")
+    public List<Book> longestBooks(@PathParam("limit") int limit) {
+        return bookService.longestBooks(limit);
     }
 
 }

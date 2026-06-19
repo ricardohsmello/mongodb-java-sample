@@ -4,8 +4,10 @@ import com.example.model.Book;
 import com.example.repository.BookRepository;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Sorts;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.bson.Document;
@@ -86,7 +88,53 @@ public class BookService {
         return b;
     }
 
-    public List<Book> between() {
-        return bookRepository.listAll();
+    public List<Document> classifyByPageCount() {
+        var setStage = new Document("$set", new Document("pageCategory",
+                new Document("$switch", new Document()
+                        .append("branches", List.of(
+                                new Document("case", new Document("$lte", List.of("$pages", 250))).append("then", "short"),
+                                new Document("case", new Document("$lte", List.of("$pages", 500))).append("then", "medium")
+                        ))
+                        .append("default", "long"))));
+
+        return collection.aggregate(List.of(setStage)).into(new ArrayList<>());
     }
+
+    public List<Document> countBooksPerAuthor() {
+        return collection.aggregate(List.of(
+                Aggregates.unwind("$authors"),
+                Aggregates.group("$authors", Accumulators.sum("totalBooks", 1)),
+                Aggregates.sort(Sorts.descending("totalBooks"))
+        )).into(new ArrayList<>());
+    }
+
+    public List<Book> sortedByYear(String order) {
+        var sort = "asc".equalsIgnoreCase(order)
+                ? Sorts.ascending("year")
+                : Sorts.descending("year");
+
+        return collection.aggregate(List.of(Aggregates.sort(sort)))
+                .into(new ArrayList<>())
+                .stream()
+                .map(this::toBook)
+                .toList();
+    }
+
+    public List<Document> booksWithReviews() {
+        return collection.aggregate(List.of(
+                Aggregates.lookup("reviews", "_id", "bookId", "allReviews"),
+                Aggregates.match(Filters.not(Filters.size("allReviews", 0)))
+        )).into(new ArrayList<>());
+    }
+
+    public List<Book> longestBooks(int limit) {
+        return collection.aggregate(List.of(
+                Aggregates.sort(Sorts.descending("pages")),
+                Aggregates.limit(limit)
+        )).into(new ArrayList<>())
+                .stream()
+                .map(this::toBook)
+                .toList();
+    }
+
 }

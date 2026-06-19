@@ -48,3 +48,23 @@ Content-Type: application/json
 ### Delete Book
 @idDelete = 6a3551be4105f41dede3ef97
 DELETE http://localhost:8080/books/{{idDelete}}
+
+### $set — classifica livros por número de páginas (short / medium / long)
+GET http://localhost:8080/books/classify
+Accept: application/json
+
+### $unwind — expande o array authors e conta livros por autor
+GET http://localhost:8080/books/per-author
+Accept: application/json
+
+### $sort — ordena livros por ano (order=asc ou order=desc)
+GET http://localhost:8080/books/sort/year?order=desc
+Accept: application/json
+
+### $lookup — livros com todas as suas reviews (join com coleção reviews)
+GET http://localhost:8080/books/with-reviews
+Accept: application/json
+
+### $limit — top N livros mais longos
+GET http://localhost:8080/books/top/5
+Accept: application/json
