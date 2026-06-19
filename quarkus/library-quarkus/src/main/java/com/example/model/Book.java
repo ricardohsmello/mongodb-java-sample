@@ -3,6 +3,8 @@ package com.example.model;
 import io.quarkus.mongodb.panache.common.MongoEntity;
 import org.bson.codecs.pojo.annotations.BsonId;
 
+import java.util.List;
+
 @MongoEntity(collection = "books")
 public class Book {
 	@BsonId
@@ -10,4 +12,6 @@ public class Book {
 	public String title;
 	public int pages;
 	public int year;
+	public List<String> authors;
+	public List<Review> reviews;
 }

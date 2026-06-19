@@ -1,0 +1,30 @@
+## Find All reviews
+GET http://localhost:8080/reviews
+Accept: application/json
+
+### Create Book
+POST http://localhost:8080/reviews
+Content-Type: application/json
+
+{
+  "user": "Maria",
+  "text": "Lovely book",
+  "rating": 5,
+  "bookId": "6a35533f1b897121f927ad55"
+}
+
+### Update Book
+@idUpdate = 6a3551be4105f41dede3ef97
+PUT http://localhost:8080/reviews/{{idUpdate}}
+Content-Type: application/json
+
+{
+  "user": "Ricardo",
+  "text": "I love this book - Changed",
+  "rating": 4,
+  "bookId": "6a35533f1b897121f927ad58"
+}
+
+### Delete Book
+@idDelete = 6a3551be4105f41dede3ef97
+DELETE http://localhost:8080/reviews/{{idDelete}}

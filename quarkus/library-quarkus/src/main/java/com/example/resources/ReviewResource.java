@@ -1,8 +1,7 @@
 package com.example.resources;
 
-import com.example.model.Book;
-import com.example.service.BookService;
-import com.mongodb.MongoTimeoutException;
+import com.example.model.Review;
+import com.example.service.ReviewService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -18,40 +17,22 @@ import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
 
-@Path("/books")
+@Path("/reviews")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class BookResource {
+public class ReviewResource {
 
     @Inject
-    BookService bookService;
+    ReviewService reviewService;
 
     @GET
-    public List<Book> findAll() {
-        return bookService.findAll();
-    }
-
-    @GET
-    @Path("/min-pages/{minPages}")
-    public List<Book> findByMinPages(@PathParam("minPages") int minPages) {
-        return bookService.findByMinPages(minPages);
-    }
-
-    @GET
-    @Path("/findById/{id}")
-    public Book findByMinPages(@PathParam("id") String id) {
-        return bookService.findById(id);
-    }
-
-    @GET
-    @Path("/findByYear/{year}")
-    public List<Book> findByYear(@PathParam("year") int year) {
-        return bookService.findByYear(year);
+    public List<Review> findAll() {
+        return reviewService.findAll();
     }
 
     @POST
-    public Response create(Book book) {
-        String id = bookService.create(book);
+    public Response create(Review review) {
+        String id = reviewService.create(review);
         return Response.status(Response.Status.CREATED)
                 .entity(Map.of("id", id))
                 .build();
@@ -59,8 +40,8 @@ public class BookResource {
 
     @PUT
     @Path("/{id}")
-    public Response update(@PathParam("id") String id, Book book) {
-        boolean updated = bookService.update(id, book);
+    public Response update(@PathParam("id") String id, Review review) {
+        boolean updated = reviewService.update(id, review);
         if (!updated) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -70,7 +51,7 @@ public class BookResource {
     @DELETE
     @Path("/{id}")
     public Response delete(@PathParam("id") String id) {
-        boolean deleted = bookService.delete(id);
+        boolean deleted = reviewService.delete(id);
         if (!deleted) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }

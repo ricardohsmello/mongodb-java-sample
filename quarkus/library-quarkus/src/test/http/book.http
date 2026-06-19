@@ -1,4 +1,4 @@
-### Find All books
+## Find All books
 GET http://localhost:8080/books
 Accept: application/json
 
@@ -6,30 +6,45 @@ Accept: application/json
 GET http://localhost:8080/books/min-pages/500
 Accept: application/json
 
+### Find By Id
+@id = 6a3559b6cb259680688b9d74
+GET http://localhost:8080/books/findById/{{id}}
+Accept: application/json
+
+
+### Find By Id
+@year = 2008
+GET http://localhost:8080/books/findByYear/{{year}}
+Accept: application/json
+
 ### Create Book
 POST http://localhost:8080/books
 Content-Type: application/json
 
 {
-  "title": "Clean Code",
+  "title": "Ricas Code",
   "pages": 431,
-  "year": 2008
+  "year": 2008,
+  "authors": [
+    "Ricardo Mello",
+    "Maria Silva"
+  ]
 }
 
 ### Update Book
-@id = 6a3313c2152e7e9df3709787
-PUT http://localhost:8080/books/{{id}}
+@idUpdate = 6a3551be4105f41dede3ef97
+PUT http://localhost:8080/books/{{idUpdate}}
 Content-Type: application/json
 
 {
-  "title": "Clean Code - Updated",
+  "title": "Ricas Code - Updated",
   "pages": 464,
-  "year": 2008
+  "year": 2008,
+  "authors": [
+    "", ""
+  ]
 }
 
 ### Delete Book
-DELETE http://localhost:8080/books/{{id}}
-
-### [POOL TEST] Slow endpoint — fire 3x simultaneously to exhaust pool (maxSize=2)
-GET http://localhost:8080/books/slow
-Accept: application/json
+@idDelete = 6a3551be4105f41dede3ef97
+DELETE http://localhost:8080/books/{{idDelete}}
