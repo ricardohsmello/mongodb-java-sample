@@ -50,6 +50,17 @@ public class BookService {
                 .toList();
     }
 
+    public List<Book> find() {
+        var aggregate = List.of(
+                Aggregates.match(Filters.exists("title"))
+        );
+
+        return collection.aggregate(aggregate)
+                .into(new ArrayList<>())
+                .stream().map(this::toBook)
+                .toList();
+    }
+
     public String create(Book book) {
         book.id = new ObjectId().toHexString();
         bookRepository.persist(book);
@@ -75,4 +86,7 @@ public class BookService {
         return b;
     }
 
+    public List<Book> between() {
+        return bookRepository.listAll();
+    }
 }
