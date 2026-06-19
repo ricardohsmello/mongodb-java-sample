@@ -23,10 +23,6 @@ public class MongoClientConfig implements MongoClientCustomizer {
     @ConfigProperty(name = "mongodb.pool.max-connection-life-time-ms", defaultValue = "0")
     long maxConnectionLifeTimeMs;
 
-    // CSOT: 0 = disabled (driver default). Set via mongodb.timeout-ms to enable.
-    @ConfigProperty(name = "mongodb.timeout-ms", defaultValue = "0")
-    long timeoutMs;
-
     @ConfigProperty(name = "mongodb.read-preference", defaultValue = "primaryPreferred")
     String readPreference;
 
@@ -35,16 +31,13 @@ public class MongoClientConfig implements MongoClientCustomizer {
         builder
                 .applicationName("devrel-tutorial-java-quarkus-library")
                 .readPreference(ReadPreference.valueOf(readPreference))
-                .applyToConnectionPoolSettings(pool -> pool
+                .applyToConnectionPoolSettings(pool -> {
+                    pool
                         .maxSize(maxSize)
                         .minSize(minSize)
                         .maxConnectionIdleTime(maxConnectionIdleTimeMs, TimeUnit.MILLISECONDS)
-                        .maxConnectionLifeTime(maxConnectionLifeTimeMs, TimeUnit.MILLISECONDS)
-                );
-
-        if (timeoutMs > 0) {
-            builder.timeout(timeoutMs, TimeUnit.MILLISECONDS);
-        }
+                        .maxConnectionLifeTime(maxConnectionLifeTimeMs, TimeUnit.MILLISECONDS);
+                });
 
         return builder;
     }

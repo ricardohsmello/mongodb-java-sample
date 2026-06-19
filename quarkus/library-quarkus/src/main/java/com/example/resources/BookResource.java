@@ -2,6 +2,7 @@ package com.example.resources;
 
 import com.example.model.Book;
 import com.example.service.BookService;
+import com.mongodb.MongoTimeoutException;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -62,13 +63,6 @@ public class BookResource {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
         return Response.noContent().build();
-    }
-
-    // pool exhaustion simulation — requires replica set (see README)
-    @GET
-    @Path("/slow")
-    public List<Book> slowQuery() throws InterruptedException {
-        return bookService.findAllWithPinnedConnection(20000);
     }
 
 }

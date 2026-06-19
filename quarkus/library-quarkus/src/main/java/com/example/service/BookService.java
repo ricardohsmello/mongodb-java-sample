@@ -2,7 +2,6 @@ package com.example.service;
 
 import com.example.model.Book;
 import com.example.repository.BookRepository;
-import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -43,35 +42,6 @@ public class BookService {
 
     public boolean delete(String id) {
         return bookRepository.deleteBook(id);
-    }
-
-    public List<Book> findAllWithPinnedConnection(long holdMs) throws InterruptedException {
-        try (ClientSession session = mongoClient.startSession()) {
-            session.startTransaction();
-            try {
-                List<Document> docs = mongoClient
-                        .getDatabase("library")
-                        .getCollection("books")
-                        .find(session)
-                        .into(new ArrayList<>());
-
-                Thread.sleep(holdMs);
-
-                session.commitTransaction();
-
-                return docs.stream().map(doc -> {
-                    Book b = new Book();
-                    b.id = doc.get("_id").toString();
-                    b.title = doc.getString("title");
-                    b.pages = doc.getInteger("pages", 0);
-                    b.year = doc.getInteger("year", 0);
-                    return b;
-                }).collect(Collectors.toList());
-            } catch (Exception e) {
-                session.abortTransaction();
-                throw e;
-            }
-        }
     }
 
 }
