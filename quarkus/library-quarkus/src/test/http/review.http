@@ -1,5 +1,5 @@
-## Find All reviews
-GET http://localhost:8080/reviews
+## Find All reviews (paginated)
+GET http://localhost:8080/reviews?page=0&size=5
 Accept: application/json
 
 ### Find Average Rating By BookId

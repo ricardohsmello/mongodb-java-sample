@@ -32,7 +32,7 @@ public class MongoClientConfig implements MongoClientCustomizer {
         MongoSettings.Pool pool = settings.pool();
 
         builder
-                .applicationName("devrel-tutorial-java-quarkus-library")
+                .applicationName(settings.applicationName())
                 .readPreference(ReadPreference.valueOf(settings.readPreference()))
                 .applyToConnectionPoolSettings(p -> {
                     p.maxSize(pool.maxSize())
