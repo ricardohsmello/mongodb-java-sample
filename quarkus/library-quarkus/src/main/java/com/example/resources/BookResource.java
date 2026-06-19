@@ -64,13 +64,11 @@ public class BookResource {
         return Response.noContent().build();
     }
 
-    // pool exhaustion simulation — remove after testing
+    // pool exhaustion simulation — requires replica set (see README)
     @GET
     @Path("/slow")
     public List<Book> slowQuery() throws InterruptedException {
-        List<Book> books = bookService.findAll();
-        Thread.sleep(4000);
-        return books;
+        return bookService.findAllWithPinnedConnection(20000);
     }
 
 }

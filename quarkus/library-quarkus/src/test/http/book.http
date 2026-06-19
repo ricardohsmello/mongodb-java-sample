@@ -1,9 +1,9 @@
 ### Find All books
-GET http://localhost:8080/book
+GET http://localhost:8080/books
 Accept: application/json
 
 ### Find All Books with min pages equals
-GET http://localhost:8080/books/min-pages/2300
+GET http://localhost:8080/books/min-pages/500
 Accept: application/json
 
 ### Create Book
