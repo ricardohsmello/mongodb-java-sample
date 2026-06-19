@@ -1,5 +1,7 @@
 package com.example.resources;
 
+import com.example.model.AverageBookRating;
+import com.example.model.Book;
 import com.example.model.Review;
 import com.example.service.ReviewService;
 import jakarta.inject.Inject;
@@ -28,6 +30,12 @@ public class ReviewResource {
     @GET
     public List<Review> findAll() {
         return reviewService.findAll();
+    }
+
+    @GET
+    @Path("/avgRating/{bookId}")
+    public AverageBookRating getAverageBookRating(@PathParam("bookId") String bookId) {
+        return reviewService.getAverageBookRating(bookId);
     }
 
     @POST

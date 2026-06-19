@@ -2,14 +2,19 @@
 GET http://localhost:8080/reviews
 Accept: application/json
 
+### Find Average Rating By BookId
+@bookId = 6a3589247d3560a92c1f547b
+GET http://localhost:8080/reviews/avgRating/{{bookId}}
+Accept: application/json
+
 ### Create Book
 POST http://localhost:8080/reviews
 Content-Type: application/json
 
 {
-  "user": "Maria",
-  "text": "Lovely book",
-  "rating": 5,
+  "user": "Paulo",
+  "text": "This is ..",
+  "rating": 1,
   "bookId": "6a35533f1b897121f927ad55"
 }
 
