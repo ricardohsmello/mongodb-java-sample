@@ -18,11 +18,11 @@ public class DataInitializer implements CommandLineRunner {
 
     private final MongoTemplate mongoTemplate;
 
-    private static final int TOTAL_BOOKS = 10_000_000;
+    private static final int TOTAL_BOOKS = 1_000;
     private static final int BATCH_SIZE  = 10_000;
 
     private static final Random rnd = new Random();
-    private final long runPrefix = Math.abs(rnd.nextLong()) % 1_000_000L;
+    private final long runPrefix = Math.abs(rnd.nextLong()) % 1_000L;
 
     private static final String[] TITLE_PREFIXES = {
             "The Art of", "Introduction to", "Mastering", "Learning", "Advanced",
@@ -101,7 +101,7 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private String generateUniqueIsbn(long counter) {
-        long value = (runPrefix * 10_000_000L) + (counter % 10_000_000L);
+        long value = (runPrefix * 1_000L) + (counter % 1_000L);
         return "978-" + String.format("%010d", value);
     }
 

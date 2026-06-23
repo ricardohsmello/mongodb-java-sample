@@ -28,13 +28,6 @@ spring.data.mongodb.host=localhost
 spring.data.mongodb.port=28000
 spring.data.mongodb.database=bookstore
 ```
-
-When you're done, tear it down with:
-
-```bash
-mongodb-cli-lab down
-```
-
 ## Run the application
 
 ```bash
