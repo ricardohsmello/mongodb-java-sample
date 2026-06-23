@@ -46,7 +46,6 @@ public class BookRepository implements PanacheMongoRepositoryBase<Book, String> 
         this.maxEmbeddedReviews = maxEmbeddedReviews;
     }
 
-    /** Returns a single, deterministically-ordered page of books. */
     public List<Book> findPage(int page, int size) {
         return findAll(Sort.by("title")).page(page, size).list();
     }

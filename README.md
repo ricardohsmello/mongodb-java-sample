@@ -1,7 +1,14 @@
+# MongoDB Java Samples
 
-# MongoDB Java Sample
+A collection of small, hands-on Java projects exploring MongoDB across
+different frameworks and tools. Each folder is a self-contained example, and
+the repo grows as new ones are added.
 
-## this project is designed for tests
+## Projects
 
-- This project will use just Java Driver
-- Explore the most common agg stages
+| Folder | Stack | What it covers |
+|---|---|---|
+| [`spring`](./spring-data-java-sample) | Spring Boot + Spring Data MongoDB | Book CRUD app, repositories, embedded Mongo for tests |
+| [`quarkus`](./quarkus/library-quarkus) | Quarkus + MongoDB Panache | Library domain lab — Panache vs. Java Driver, aggregations, schema patterns |
+
+Each project has its own README with setup and run instructions.

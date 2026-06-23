@@ -1,0 +1,74 @@
+{
+  "projectName": "mongodb-cli-lab",
+  "config": {
+    "topology": "replica-set",
+    "shardCount": 0,
+    "replicaSetMembers": 3,
+    "primaryElectionBehavior": "prefer-first-node",
+    "mongodbVersion": "8.2",
+    "mongosPort": 28000,
+    "storagePath": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab",
+    "features": {
+      "search": false
+    },
+    "sampleDatabases": [],
+    "search": {
+      "mongodPort": 27018,
+      "mongotPort": 27028,
+      "metricsPort": 9946
+    },
+    "configServerReplicaSet": "configReplSet",
+    "configServerMembers": 3
+  },
+  "topology": {
+    "configServers": [],
+    "shards": [],
+    "replicaSet": {
+      "name": "rs0",
+      "members": [
+        {
+          "id": "rs0-1",
+          "serviceName": "rs0-1",
+          "replicaSet": "rs0",
+          "dbPath": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/replica-set/member1",
+          "hostPort": 28000,
+          "advertisedHostname": "rs0-1.localhost",
+          "advertisedHost": "rs0-1.localhost:28000",
+          "externalHost": "rs0-1.localhost:28000"
+        },
+        {
+          "id": "rs0-2",
+          "serviceName": "rs0-2",
+          "replicaSet": "rs0",
+          "dbPath": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/replica-set/member2",
+          "hostPort": 28001,
+          "advertisedHostname": "rs0-2.localhost",
+          "advertisedHost": "rs0-2.localhost:28001",
+          "externalHost": "rs0-2.localhost:28001"
+        },
+        {
+          "id": "rs0-3",
+          "serviceName": "rs0-3",
+          "replicaSet": "rs0",
+          "dbPath": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/replica-set/member3",
+          "hostPort": 28002,
+          "advertisedHostname": "rs0-3.localhost",
+          "advertisedHost": "rs0-3.localhost:28002",
+          "externalHost": "rs0-3.localhost:28002"
+        }
+      ]
+    },
+    "standalone": null,
+    "mongos": null,
+    "queryRouter": {
+      "serviceName": "rs0-1",
+      "hostPort": 28000,
+      "containerPort": 27017,
+      "sampleArchiveFile": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/sampledata.archive"
+    },
+    "search": null
+  },
+  "composeFile": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/docker-compose.yml",
+  "clusterConfigFile": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/cluster-config.json",
+  "topologyFile": "/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/topology.json"
+}

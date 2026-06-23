@@ -1,0 +1,67 @@
+services:
+  rs0-1:
+    image: mongo:8.2
+    container_name: rs0-1
+    extra_hosts:
+      - 'rs0-1.localhost:host-gateway'
+      - 'rs0-2.localhost:host-gateway'
+      - 'rs0-3.localhost:host-gateway'
+    command:
+      - "mongod"
+      - "--replSet"
+      - "rs0"
+      - "--bind_ip_all"
+      - "--port"
+      - "27017"
+      - "--dbpath"
+      - "/data/db"
+    ports:
+      - '28000:27017'
+    volumes:
+      - '/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/replica-set/member1:/data/db'
+      - '/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/sampledata.archive:/sampledata.archive'
+    restart: "no"
+  rs0-2:
+    image: mongo:8.2
+    container_name: rs0-2
+    extra_hosts:
+      - 'rs0-1.localhost:host-gateway'
+      - 'rs0-2.localhost:host-gateway'
+      - 'rs0-3.localhost:host-gateway'
+    command:
+      - "mongod"
+      - "--replSet"
+      - "rs0"
+      - "--bind_ip_all"
+      - "--port"
+      - "27017"
+      - "--dbpath"
+      - "/data/db"
+    ports:
+      - '28001:27017'
+    volumes:
+      - '/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/replica-set/member2:/data/db'
+      - '/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/sampledata.archive:/sampledata.archive'
+    restart: "no"
+  rs0-3:
+    image: mongo:8.2
+    container_name: rs0-3
+    extra_hosts:
+      - 'rs0-1.localhost:host-gateway'
+      - 'rs0-2.localhost:host-gateway'
+      - 'rs0-3.localhost:host-gateway'
+    command:
+      - "mongod"
+      - "--replSet"
+      - "rs0"
+      - "--bind_ip_all"
+      - "--port"
+      - "27017"
+      - "--dbpath"
+      - "/data/db"
+    ports:
+      - '28002:27017'
+    volumes:
+      - '/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/replica-set/member3:/data/db'
+      - '/Users/ricardomello/Documents/projects/github/ricardohsmello/mongodb-java-sample/quarkus/library-quarkus/mongodb-cli-lab/sampledata.archive:/sampledata.archive'
+    restart: "no"
