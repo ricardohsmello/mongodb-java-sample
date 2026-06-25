@@ -1,4 +1,4 @@
-package com.example.langchain4j;
+package com.example.langchain4j.service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

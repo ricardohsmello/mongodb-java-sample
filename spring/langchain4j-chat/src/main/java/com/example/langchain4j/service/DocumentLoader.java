@@ -1,4 +1,4 @@
-package com.example.langchain4j;
+package com.example.langchain4j.service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;

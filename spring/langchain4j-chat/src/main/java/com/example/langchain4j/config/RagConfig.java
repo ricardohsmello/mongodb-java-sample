@@ -1,6 +1,8 @@
 package com.example.langchain4j.config;
 
-import com.example.langchain4j.Assistant;
+import com.example.langchain4j.service.Assistant;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import dev.langchain4j.model.chat.ChatModel;
@@ -20,20 +22,24 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Set;
 
 /**
- * Every LangChain4j building block of the RAG pipeline is wired here, one bean each.
- *
- *   VoyageAiEmbeddingModel      -> turns text into a vector
- *   MongoDbEmbeddingStore       -> stores vectors and runs Atlas Vector Search
- *   OpenAiChatModel             -> writes the final answer
+ *   VoyageAiEmbeddingModel      -> turns text into a vector (embeddingModel)
+ *   MongoDbEmbeddingStore       -> stores vectors and runs Atlas Vector Search (embeddingStore)
+ *   OpenAiChatModel             -> writes the final answer (chatModel)
  *   EmbeddingStoreContentRetriever -> finds the most relevant documents for a question
- *   AiServices                  -> glues retriever + chat model into our Assistant
+ *   AiServices-> retriever + chat model into our Assistant (generation flow)
  */
 @Configuration
 public class RagConfig {
 
     @Bean
     public MongoClient mongoClient(@Value("${mongodb.uri}") String uri) {
-        return MongoClients.create(uri);
+        return MongoClients.create(
+                MongoClientSettings
+                        .builder()
+                        .applicationName("devrel-tutorial-java-langchain4j")
+                        .applyConnectionString(new ConnectionString(uri))
+                        .build()
+        );
     }
 
     /** Voyage AI: text -> embedding. */
@@ -45,6 +51,8 @@ public class RagConfig {
         return VoyageAiEmbeddingModel.builder()
                 .apiKey(apiKey)
                 .modelName(model)
+                .logRequests(true)   // logs each call sent to Voyage (the embedding requests)
+                .logResponses(true)
                 .build();
     }
 
@@ -63,8 +71,8 @@ public class RagConfig {
                 .indexName(indexName)
                 .createIndex(true)
                 .indexMapping(IndexMapping.builder()
-                        .dimension(1024)                       // matches voyage-3-large
-                        .metadataFieldNames(Set.of())          // no metadata filters in this demo
+                        .dimension(1024)
+                        .metadataFieldNames(Set.of())
                         .build())
                 .build();
     }
@@ -78,6 +86,8 @@ public class RagConfig {
         return OpenAiChatModel.builder()
                 .apiKey(apiKey)
                 .modelName(model)
+                .logRequests(true)   // logs the FINAL prompt sent to OpenAI (already with the retrieved context)
+                .logResponses(true)
                 .build();
     }
 
@@ -93,12 +103,13 @@ public class RagConfig {
         var retriever = EmbeddingStoreContentRetriever.builder()
                 .embeddingStore(embeddingStore)
                 .embeddingModel(embeddingModel)
+              //.minScore(0.8)
                 .maxResults(3) // top 3 most relevant documents
                 .build();
 
         return AiServices.builder(Assistant.class)
                 .chatModel(chatModel)
-                .contentRetriever(retriever)
+                .contentRetriever(retriever) // THIS CODE SEARCH FOR RELEVANT DATABASE RESULTS
                 .build();
     }
 }

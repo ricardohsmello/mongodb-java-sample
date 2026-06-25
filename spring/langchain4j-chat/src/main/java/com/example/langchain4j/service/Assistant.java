@@ -1,4 +1,4 @@
-package com.example.langchain4j;
+package com.example.langchain4j.service;
 
 /**
  * The RAG assistant. LangChain4j generates the implementation at runtime via AiServices.

@@ -1,4 +1,4 @@
-package com.example.langchain4j;
+package com.example.langchain4j.service;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;

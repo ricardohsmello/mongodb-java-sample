@@ -6,18 +6,18 @@ GET {{host}}/health
 ### 2. Ingest sample documents (run ONCE)
 POST {{host}}/ingest
 
-### 3. Ask the demo question (RAG)
-POST {{host}}/chat
+### 3. Semantic search ONLY — see what Vector Search returns (no OpenAI - Generation)
+POST {{host}}/search
 Content-Type: application/json
 
 {
-  "question": "Onde as piranhas vivem?"
+  "question": "Which rainforest animals are most dangerous and why?"
 }
 
-### 4. Ask another question — try your own
+### 4. Ask a question - RAG
 POST {{host}}/chat
 Content-Type: application/json
 
 {
-  "question": "Which predators live in the rainforest?"
+  "question": "Which rainforest animals are most dangerous and why?"
 }
