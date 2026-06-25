@@ -1,0 +1,50 @@
+package com.example.langchain4j.controller;
+
+import com.example.langchain4j.Assistant;
+import com.example.langchain4j.IngestionService;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Map;
+
+/**
+ * REST entry points for the demo:
+ *
+ *   POST /ingest  -> load + embed + store the sample documents
+ *   POST /chat    -> ask a question, get a RAG answer
+ *   GET  /health  -> simple liveness check
+ */
+@RestController
+public class RagController {
+
+    private final Assistant assistant;
+    private final IngestionService ingestionService;
+
+    public RagController(Assistant assistant, IngestionService ingestionService) {
+        this.assistant = assistant;
+        this.ingestionService = ingestionService;
+    }
+
+    public record ChatRequest(String question) {}
+    public record ChatResponse(String answer) {}
+
+    /** Question -> Vector Search -> OpenAI -> Answer. */
+    @PostMapping("/chat")
+    public ChatResponse chat(@RequestBody ChatRequest request) {
+        return new ChatResponse(assistant.answer(request.question()));
+    }
+
+    /** Documents -> Voyage AI -> MongoDB Atlas. */
+    @PostMapping("/ingest")
+    public Map<String, Object> ingest() throws Exception {
+        int count = ingestionService.ingest();
+        return Map.of("ingested", count);
+    }
+
+    @GetMapping("/health")
+    public Map<String, String> health() {
+        return Map.of("status", "UP");
+    }
+}

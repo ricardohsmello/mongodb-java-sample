@@ -21,15 +21,38 @@
 
     <dependency>
       <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter</artifactId>
+      <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
 
-    <!-- Step 1: only the OpenAI chat integration is needed. -->
+    <!-- OpenAI: the chat model that writes the final answer. -->
     <dependency>
       <groupId>dev.langchain4j</groupId>
       <artifactId>langchain4j-open-ai</artifactId>
       <version>${langchain4j.version}</version>
     </dependency>
+
+    <!-- Voyage AI: turns text into embeddings (vectors). -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-voyage-ai</artifactId>
+      <version>${langchain4j.version}-beta26</version>
+    </dependency>
+
+    <!-- MongoDB Atlas: stores the vectors and runs Vector Search. -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j-mongodb-atlas</artifactId>
+      <version>${langchain4j.version}-beta26</version>
+    </dependency>
+
+    <!-- AiServices + retriever live in langchain4j core. -->
+    <dependency>
+      <groupId>dev.langchain4j</groupId>
+      <artifactId>langchain4j</artifactId>
+      <version>${langchain4j.version}</version>
+    </dependency>
+
+    <!-- Jackson (reads rainforest-docs.json) comes transitively with spring-boot-starter-web. -->
 
   </dependencies>
 

@@ -1,0 +1,23 @@
+@host = http://localhost:8080
+
+### 1. Health check — confirm the app is up
+GET {{host}}/health
+
+### 2. Ingest sample documents (run ONCE)
+POST {{host}}/ingest
+
+### 3. Ask the demo question (RAG)
+POST {{host}}/chat
+Content-Type: application/json
+
+{
+  "question": "Onde as piranhas vivem?"
+}
+
+### 4. Ask another question — try your own
+POST {{host}}/chat
+Content-Type: application/json
+
+{
+  "question": "Which predators live in the rainforest?"
+}
